@@ -111,7 +111,7 @@ class TodoController extends Controller
         }
 
         $todo->delete();
-        return $this->response('success', 'Registro excluído');
+        return $this->response('success', 'Todo deleted successfully');
     }
 
     public function toggle($id)

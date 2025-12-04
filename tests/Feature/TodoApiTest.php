@@ -58,7 +58,8 @@ class TodoApiTest extends TestCase
         $response = $this->putJson("/api/todos/{$todo->id}", $data);
 
         $response->assertStatus(200)
-                 ->assertJsonFragment($data);
+            ->assertJsonPath('data.title', $data['title'])
+            ->assertJsonPath('data.completed', $data['completed']);
     }
 
     public function test_can_delete_todo()
@@ -68,7 +69,7 @@ class TodoApiTest extends TestCase
         $response = $this->deleteJson("/api/todos/{$todo->id}");
 
         $response->assertStatus(200)
-                 ->assertJson(['message' => 'Todo deleted successfully']);
+            ->assertJson(['message' => 'Todo deleted successfully']);
 
         $this->assertDatabaseMissing('todos', ['id' => $todo->id]);
     }
@@ -93,6 +94,10 @@ class TodoApiTest extends TestCase
         $response = $this->postJson('/api/todos', []);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['title']);
+         ->assertJsonStructure([
+             'status',
+             'message',
+             'data' => ['title']
+         ]);
     }
 }
